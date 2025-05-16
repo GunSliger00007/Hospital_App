@@ -1,0 +1,187 @@
+{% extends 'home.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+
+{% block profile %}
+
+<button data-popover-target="popover-user-profile" type="button" class="hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full px-1 py-1   dark:focus:ring-blue-800">
+    <img class="w-10 h-10 rounded-full" src="{{ profile.profile_picture.url }}" alt="Jese Leos">
+</button>
+
+<div data-popover id="popover-user-profile" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white  rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
+    <div class="rounded-lg  bg-white px-4 pt-8 pb-10 shadow-lg">
+        <div class="relative mx-auto w-36 rounded-full">
+        <span class="absolute right-0 m-3 h-3 w-3 rounded-full bg-green-500 ring-2 ring-green-300 ring-offset-2"></span>
+            {% if profile.profile_picture %}
+                <img  class="mx-auto h-auto w-full rounded-full" src="{{ profile.profile_picture.url }}" alt="Profile Picture">
+            {% endif %}
+
+        <!-- <img class="mx-auto h-auto w-full rounded-full" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt="" /> -->
+        </div>
+        <h1 class="my-1 text-center text-xl font-bold leading-8 text-gray-900">{{ profile.user.username }}</h1>
+        <h3 class="font-lg text-semibold text-center leading-6 text-gray-600">Specialization: {{ profile.specialty }}</h3>
+        <p class="text-center text-sm leading-6 text-gray-500 hover:text-gray-600">License Number: {{ profile.license_number }}</p>
+        <ul class="mt-3 divide-y rounded bg-gray-100 py-2 px-3 text-gray-600 shadow-sm hover:text-gray-700 hover:shadow">
+        <li class="flex items-center py-3 text-sm">
+            <span>Status</span>
+            <span class="ml-auto"><span class="rounded-full bg-green-200 py-1 px-2 text-xs font-medium text-green-700">Available</span></span>
+        </li>
+        <li class="flex items-center py-3 text-sm">
+            <span>Email</span>
+            <span class="ml-auto">{{ profile.user.email }}</span>
+        </li>
+        <li class="flex items-center py-3 text-sm">
+            <span>Address</span>
+            <span class="ml-auto">{{ profile.line1 }}</span>
+        </li>
+        <li class="flex items-center py-3 text-sm">
+            <span>City</span>
+            <span class="ml-auto">{{ profile.city }}</span>
+        </li>
+        <li class="flex items-center py-3 text-sm">
+            <span>State</span>
+            <span class="ml-auto">{{ profile.state }}</span>
+        </li>
+        <li class="flex items-center py-3 text-sm">
+            <span>Pincode</span>
+            <span class="ml-auto">{{ profile.pincode }}</span>
+        </li>
+        <li class="flex items-center py-3 text-sm">
+            <span>Joined On</span>
+            <span class="ml-auto">{{ profile.user.date_joined }}</span>
+        </li>
+        </ul>
+    </div>
+    <div data-popper-arrow></div>
+</div>
+
+
+{% endblock %}
+
+{% block loginout %}<a href="{% url 'logout' %}" class="py-2 px-3 bg-gray-400 text-white rounded hover:bg-gray-400">Logout</a>{% endblock %}
+
+
+{% block content %}
+
+    
+</div>
+<!-- Modal Structure -->
+<div id="editModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-5 rounded-lg shadow-lg w-1/2">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-medium text-gray-700">Edit Post</h3>
+                <button id="closeModal" class="text-gray-700">&times;</button>
+            </div>
+            <form id="editForm" method="POST" enctype="multipart/form-data" action="{% url 'update_post' %}">
+                {% csrf_token %}
+                <input class="hidden" type="number" name="post_id" id="post_id">
+                <div class="mt-4">
+                    <label for="title" class="block text-gray-700">Title:</label>
+                    <input type="text" id="title" name="title" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="mt-4">
+                    <label for="content" class="block text-gray-700">Content:</label>
+                    <textarea id="content" name="content" class="w-full p-2 border border-gray-300 rounded mt-1"></textarea>
+                </div>
+                <div class="mt-4">
+                    <label for="category" class="block text-gray-700">Category:</label>
+                    <input type="text" id="category" name="category" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="mt-4">
+                    <label for="image" class="block text-gray-700">Image:</label>
+                    <input type="file" id="image" name="image" class="w-full p-2 border border-gray-300 rounded mt-1">
+                </div>
+                <div class="mt-4">
+                    <label for="draft" class="block text-gray-700">Draft:</label>
+                    <input type="checkbox" id="draft" name="draft">
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% for post in blog_posts %}
+    <div id="{{ post.id }}" class="fixed flex top-0 left-0 z-10 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center hidden" >
+      <article  class="mx-auto my-10 flex max-w-md flex-col z-20 rounded-2xl transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center ">
+          <div class="shrink-0 my-4 md:mr-8 md:max-w-sm">
+              <img class="rounded-2xl" src="{{ post.image.url }}" alt="" />
+          </div>
+          <div class="py-4 sm:py-8">
+              <a href="#" class="mb-6 block text-2xl font-medium text-gray-700 article-title">{{ post.title }}</a>
+              <p class="mb-6 text-gray-500 article-summary">{{ post.content }}</p>
+              <div class="flex items-center">
+                  <img class="h-10 w-10 rounded-full object-cover" src="{{ post.author.profile_picture.url }}" alt="Author Profile Picture" />
+                  <p class="ml-4 w-56">
+                      <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                      <span class="text-sm text-gray-400">{{ post.created_at }}</span>
+                  </p>
+                <button id="closedata" onclick="closedata('{{ post.id }}')" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Close</button>
+
+              </div>
+          </div>
+      </article>
+    </div>
+    {% endfor %}
+<script>
+    document.getElementById('upload-icon').addEventListener('click', function() {
+            document.getElementById('file-input').click();
+        });
+    function odo(){
+        fileimage = document.getElementById('file-input').value;
+        console.log(fileimage);
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+    const editIcons = document.querySelectorAll('.edit-icon');
+    const editModal = document.getElementById('editModal');
+    const closeModal = document.getElementById('closeModal');
+    const editForm = document.getElementById('editForm');
+
+    editIcons.forEach(icon => {
+        icon.addEventListener('click', () => {
+            const postId = icon.getAttribute('post-id');
+            console.log("this is post id"+postId);
+            const postTitle = icon.getAttribute('data-title');
+            const postContent = icon.getAttribute('data-content');
+            const postCategory = icon.getAttribute('data-category');
+            const postImage = icon.getAttribute('data-image');
+            const postDraft = icon.getAttribute('data-draft') === 'True';
+
+            document.getElementById('post_id').value = postId;
+            document.getElementById('title').value = postTitle;
+            document.getElementById('content').value = postContent;
+            document.getElementById('category').value = postCategory;
+            // Image handling can be complex, usually you won't populate it here
+            document.getElementById('draft').checked = postDraft;
+
+            editModal.classList.remove('hidden');
+        });
+    });
+
+    closeModal.addEventListener('click', () => {
+        editModal.classList.add('hidden');
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === editModal) {
+            editModal.classList.add('hidden');
+        }
+    });
+});
+
+function show_data(postid){
+        console.log(postid);
+        const content = document.getElementById(postid);
+        content.classList.remove('hidden');
+      }
+
+function closedata(postid){
+const content = document.getElementById(postid);
+content.classList.add('hidden');
+}
+
+</script>
+{% endblock %}

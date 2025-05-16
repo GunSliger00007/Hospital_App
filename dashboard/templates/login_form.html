@@ -1,0 +1,145 @@
+
+{% extends 'home.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<!-- Login Form Section -->
+<div class="py-20 bg-white">
+    <div class="container mx-auto">
+        <div class="max-w-md mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+            <div class="container mx-auto mt-10">
+
+                <!-- Show Toast -->
+                {% if show_toast %}
+                    {% if success %}
+                    <div id="toast-success" class="flex mx-auto items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow" role="alert">
+                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                            </svg>
+                            <span class="sr-only">Check icon</span>
+                        </div>
+                        <div class="ms-3 text-sm font-normal">{{ message }}</div>
+                        <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 " data-dismiss-target="#toast-success" aria-label="Close">
+                            <span class="sr-only">Close</span>
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                        </button>
+                    </div>
+                    {% else %}
+                    <div id="toast-danger" class="flex mx-auto  items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow " role="alert">
+                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg ">
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                            </svg>
+                            <span class="sr-only">Error icon</span>
+                        </div>
+                        <div class="ms-3 text-sm font-normal">{{ message }}</div>
+                        <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-danger" aria-label="Close">
+                            <span class="sr-only">Close</span>
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                        </button>
+                    </div>
+                    {% endif %}
+                {% endif %}
+
+
+
+
+
+
+
+
+
+
+                <!-- Tab navigation -->
+                <div class="mb-4  dark:border-gray-700">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tab-navigation">
+                        <li class="me-2" role="presentation">
+                            <button class="inline-block p-4 border-b-2 bg-blue-200 rounded-t-lg active-tab" data-tab-target="doctor" type="button" role="tab" aria-controls="doctor" aria-selected="true" >Doctor</button>
+                        </li>
+                        <li class="me-2" role="presentation">
+                            <button class="inline-block p-4 border-b-2 rounded-t-lg" data-tab-target="patient" type="button" role="tab" aria-controls="patient" aria-selected="false">Patient</button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Tab content -->
+                <div id="tab-content">
+                    <div class="p-4 rounded-lg bg-blue-100  tab-pane" id="doctor" role="tabpanel" aria-labelledby="doctor-tab">
+                        <form id="login-form" method="post" action="">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="username" class="block text-gray-700">Username</label>
+                                <input type="text" id="username" name="username" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="block text-gray-700">Password</label>
+                                <input type="password" id="password" name="password" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-400">Login</button>
+                        </form>
+                    </div>
+                    <div class="hidden p-4 rounded-lg bg-violet-300  tab-pane" id="patient" role="tabpanel" aria-labelledby="patient-tab">
+                        <form id="login-form" method="post" action="">
+                            {% csrf_token %}
+
+                            <div class="mb-4">
+                                <label for="username" class="block text-gray-700">Username</label>
+                                <input type="text" id="username" name="username" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="block text-gray-700">Password</label>
+                                <input type="password" id="password" name="password" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-400">Login</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+              
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.4.1/flowbite.min.js"></script>
+    <script>
+        const tabs = document.querySelectorAll('[data-tab-target]');
+        const tabContents = document.querySelectorAll('.tab-pane');
+        console.log("script");
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tabTarget;
+                console.log("clicked");
+
+
+                // Toggle active classes for tabs
+                tabs.forEach(t => t.classList.remove('active-tab', 'bg-blue-200','bg-violet-300'));
+                if (target === 'doctor') {
+                    tab.classList.add('active-tab', 'bg-blue-200');
+                    } else {
+                        tab.classList.add('active-tab', 'bg-violet-300');
+                    }
+
+                // Toggle active class for tab content
+                tabContents.forEach(content => {
+                    if (content.id === target) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        
+    </script>
+
+
+{% endblock %}

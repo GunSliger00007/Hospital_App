@@ -1,0 +1,303 @@
+{% extends 'home.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    
+    
+
+    <div class="py-20 bg-white">
+        <div class="container mx-auto">
+            <div class="max-w-xl mx-auto bg-gray-100 p-8 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold mb-6 text-center">Signup</h2>
+                <div class="container mx-auto mt-10">
+
+                    <!-- Show Toast -->
+                    {% if show_toast %}
+                        {% if success %}
+                        <div id="toast-success" class="flex mx-auto items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow" role="alert">
+                            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                </svg>
+                                <span class="sr-only">Check icon</span>
+                            </div>
+                            <div class="ms-3 text-sm font-normal">{{ message }}</div>
+                            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 " data-dismiss-target="#toast-success" aria-label="Close">
+                                <span class="sr-only">Close</span>
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        {% else %}
+                        <div id="toast-danger" class="flex mx-auto  items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow " role="alert">
+                            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg ">
+                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                                </svg>
+                                <span class="sr-only">Error icon</span>
+                            </div>
+                            <div class="ms-3 text-sm font-normal">{{ message }}</div>
+                            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#toast-danger" aria-label="Close">
+                                <span class="sr-only">Close</span>
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                            </button>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <!-- Tab navigation -->
+                    <div class="mb-4  dark:border-gray-700">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="tab-navigation">
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-2 bg-blue-200 rounded-t-lg active-tab" data-tab-target="doctor" type="button" role="tab" aria-controls="doctor" aria-selected="true" >Doctor</button>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <button class="inline-block p-4 border-b-2 rounded-t-lg" data-tab-target="patient" type="button" role="tab" aria-controls="patient" aria-selected="false">Patient</button>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Tab content -->
+                    <div id="tab-content">
+                        <div class="p-4 rounded-lg bg-blue-100  tab-pane" id="doctor" role="tabpanel" aria-labelledby="doctor-tab">
+                            <form id="doctor-signup-form" method="post" action="" onsubmit="return validateForm()" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label for="first_name" class="block text-gray-700">First Name</label>
+                                    <input type="text" id="first_name" name="first_name" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    <input type="text" id="role" name="role" value="doctor" class="hidden" >
+                                </div>
+                                <div class="mb-4">
+                                    <label for="last_name" class="block text-gray-700">Last Name</label>
+                                    <input type="text" id="last_name" name="last_name" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="profile_picture" class="block text-gray-700">Profile Picture</label>
+                                    <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="username" class="block text-gray-700">Username</label>
+                                    <input type="text" id="username" name="username" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="email" class="block text-gray-700">Email ID</label>
+                                    <input type="email" id="email" name="email" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="speciality" class="block text-gray-700">Speciality</label>
+                                    <input type="text" id="speciality" name="speciality" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="license" class="block text-gray-700">License Number</label>
+                                    <input type="text" id="license" name="license" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="password" class="block text-gray-700">Password</label>
+                                    <input type="password" id="password" name="password" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="confirm_password" class="block text-gray-700">Confirm Password</label>
+                                    <input type="password" id="confirm_password" name="confirm_password" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" onkeyup="checkPasswordMatch()">
+                                    <br>
+                                    <span id="password_match"> </span>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="address_line1" class="block text-gray-700">Address Line 1</label>
+                                    <input type="text" id="address_line1" name="address_line1" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="city" class="block text-gray-700">City</label>
+                                    <input type="text" id="city" name="city" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="state" class="block text-gray-700">State</label>
+                                    <input type="text" id="state" name="state" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="pincode" class="block text-gray-700">Pincode</label>
+                                    <input type="text" id="pincode" name="pincode" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-400">Sign Up</button>
+                            </form>
+                        </div>
+                        <div class="hidden p-4 rounded-lg bg-violet-200  tab-pane" id="patient" role="tabpanel" aria-labelledby="patient_tab">
+                            <form id="patient_signup-form" method="post" action="" onsubmit="return patient_validateForm()" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-4">
+                                    <label for="patient_first_name" class="block text-gray-700">First Name</label>
+                                    <input type="text" id="patient_first_name" name="first_name" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    <input type="text" id="role" name="role" value="patient" class="hidden">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_last_name" class="block text-gray-700">Last Name</label>
+                                    <input type="text" id="patient_last_name" name="last_name" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_profile_picture" class="block text-gray-700">Profile Picture</label>
+                                    <input type="file" id="patient_profile_picture" name="patient_profile_picture" accept="image/*" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_username" class="block text-gray-700">Username</label>
+                                    <input type="text" id="patient_username" name="username" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_email" class="block text-gray-700">Email ID</label>
+                                    <input type="email" id="patient_email" name="email" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_password" class="block text-gray-700">Password</label>
+                                    <input type="password" id="patient_password" name="password" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_confirm_password" class="block text-gray-700">Confirm Password</label>
+                                    <input type="password" id="patient_confirm_password" name="confirm_password" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400" onkeyup="patient_checkPasswordMatch()">
+                                    <br>
+                                    <span id="patient_password_match"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_address_line1" class="block text-gray-700">Address Line 1</label>
+                                    <input type="text" id="patient_address_line1" name="address_line1" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_city" class="block text-gray-700">City</label>
+                                    <input type="text" id="patient_city" name="city" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_state" class="block text-gray-700">State</label>
+                                    <input type="text" id="patient_state" name="state" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <div class="mb-4">
+                                    <label for="patient_pincode" class="block text-gray-700">Pincode</label>
+                                    <input type="text" id="patient_pincode" name="pincode" class="mt-1 p-2 w-full border rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                </div>
+                                <button type="submit" class="w-full bg-violet-400 text-white py-2 rounded hover:bg-blue-400">Sign Up</button>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
+                  
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.4.1/flowbite.min.js"></script>
+    <script>
+
+        const tabs = document.querySelectorAll('[data-tab-target]');
+        const tabContents = document.querySelectorAll('.tab-pane');
+        console.log("script");
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tabTarget;
+                console.log("clicked");
+
+
+                // Toggle active classes for tabs
+                tabs.forEach(t => t.classList.remove('active-tab', 'bg-blue-200','bg-violet-300'));
+                
+                if (target === 'doctor') {
+                    tab.classList.add('active-tab', 'bg-blue-200');
+                    } else {
+                        tab.classList.add('active-tab', 'bg-violet-300');
+                    }
+
+                // Toggle active class for tab content
+                tabContents.forEach(content => {
+                    if (content.id === target) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        function hideDiv() {
+            var div = document.getElementById('toast-success');
+            setTimeout(function() {
+                div.style.display = 'none';
+            }, 2000); 
+        }
+        function hideDiv2() {
+            var div2 = document.getElementById('toast-danger');
+            setTimeout(function() {
+                div2.style.display = 'none';
+
+            }, 2000); 
+        }
+        window.onload = function() {
+            hideDiv();
+            hideDiv2();
+        };
+
+        function checkPasswordMatch() {
+            var password = document.getElementById("password");
+            var confirm_password = document.getElementById("confirm_password");
+            var message = document.getElementById("password_match");
+            
+            // Check if the passwords match
+            if (password.value === confirm_password.value ) {
+                message.innerHTML = "Passwords match!";
+                message.style.color = "green";
+            } else {
+                message.innerHTML = "Passwords do not match";
+                message.style.color = "red";
+            }
+            
+        }
+
+        function patient_checkPasswordMatch(){
+            var patient_password = document.getElementById("patient_password");
+            var patient_confirm_password = document.getElementById("patient_confirm_password");
+            var patient_message = document.getElementById("patient_password_match");
+
+            if ( patient_password.value === patient_confirm_password.value) {
+                console.log("in if");
+                patient_message.innerHTML = "Passwords match!";
+                patient_message.style.color = "green";
+            } else {
+                console.log("in else");
+
+                patient_message.innerHTML = "Passwords do not match";
+                patient_message.style.color = "red";
+            }
+
+        }
+
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match. Please try again.");
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+
+        function patient_validateForm() {
+            var password = document.getElementById("patient_password").value;
+            var confirmPassword = document.getElementById("patient_confirm_password").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match. Please try again.");
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+
+        
+        
+    </script>
+{% endblock %}
