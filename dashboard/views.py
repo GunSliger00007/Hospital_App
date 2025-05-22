@@ -187,6 +187,96 @@ def signup(request):
         return render(request,'signup_form.html',{'message':message, 'show_toast': True,'success':success})
     
 
+@login_required
+def post_blog(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category = request.POST.get('category')
+        image = request.FILES.get('image')
+        draft = request.POST.get('draft') 
+
+        if draft:  
+            is_draft = True
+        else:
+            is_draft = False
+        lines = content.split('\n')
+        summary = '\n'.join(lines[:2]) + "....."
+
+        print(title, content, category, image)
+        doctor = request.user
+        profile = Doctor.objects.get(user=doctor)
+        blog_post = Blog_Post(
+            title=title,
+            content=content,
+            summary = summary, 
+            category=category,
+            image=image,
+            author=profile,
+            draft = is_draft
+
+        )
+        blog_post.save()
+        success_message = "Your blog post has been successfully saved!"
+    
+    return redirect('/dash/profile/')
+
+@login_required
+def delete_post(request, post_id):
+    print("inside delete")
+    post = get_object_or_404(Blog_Post, id=post_id)
+    
+    if request.user != post.author.user:
+        print("ERROR")
+    if post:
+        post.delete()
+    return redirect('/dash/profile')
+
+@login_required
+def update_post(request):
+    if request.method == 'POST':
+        post_id = request.POST.get('post_id')
+        print("posstid", post_id)
+        title = request.POST.get('title')
+        print("posstitlte", title)
+
+        content = request.POST.get('content')
+        category = request.POST.get('category')
+        draft = request.POST.get('draft')
+
+        post = get_object_or_404(Blog_Post, id=post_id)
+
+        post.title = title
+        post.content = content
+        post.category = category
+        post.draft = True if draft == 'on' else False 
+        if 'image' in request.FILES:
+            post.image = request.FILES['image']
+        post.save()
+        return redirect('/dash/profile')
+    
+
+
+def convert_to_iso_format_with_end_time(date_str, time_str):
+    try:
+        # Parse date and time strings
+        date_obj = datetime.strptime(date_str, "%m/%d/%Y")
+        time_obj = datetime.strptime(time_str, "%H:%M").time()
+
+        # Combine date and time into a datetime object
+        combined_datetime = datetime.combine(date_obj.date(), time_obj)
+
+        # Add 45 minutes to the combined datetime
+        end_datetime = combined_datetime + dt.timedelta(minutes=45)
+
+        # Format end datetime into ISO 8601 format
+        iso_start = combined_datetime.isoformat()
+        iso_end = end_datetime.isoformat()
+
+        return iso_start, iso_end
+    except ValueError as e:
+        print(f"Error parsing date or time: {e}")
+        return None, None
     
 @login_required
 def book_appointment(request):
