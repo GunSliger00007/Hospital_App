@@ -1,3 +1,4 @@
+
 {% extends 'home.html' %}
 {% load static %}
 
@@ -57,7 +58,185 @@
 {% endblock %}
 
 {% block content %}
+<div class="m-16">
+    <div class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2">
+        <ul class="flex flex-wrap -mb-px text-lg font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg" id="profile-tab" data-tabs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Doctors</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="dashboard-tab" data-tabs-target="#dashboard" type="button" role="tab" aria-controls="dashboard" aria-selected="false">Blog</button>
+            </li>
+            <li class="me-2" role="presentation">
+                <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="appointment-tab" data-tabs-target="#appointment" type="button" role="tab" aria-controls="appointment" aria-selected="false">Appointments</button>
+            </li>
+        </ul>
+    </div>
+    <div id="default-tab-content">
+        <div class="flex gap-3 hidden p-4 rounded-lg" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            {% for doctor in doctors %}
+                <div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow">
+                    <div class="flex flex-col mt-10 items-center pb-10">
+                        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" src="{{ doctor.profile_picture.url }}" alt="Doctor Image"/>
+                        <h5 class="mb-1 text-xl font-medium text-gray-900">Dr {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h5>
+                       
+                        <div class="flex mt-4 md:mt-6">
+                            <button type="button" data-modal-target="timepicker-modal-{{ doctor.id }}" data-modal-toggle="timepicker-modal-{{ doctor.id }}" class="text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="w-4 h-4 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                                </svg>
+                                Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Main modal -->
+                <div id="timepicker-modal-{{ doctor.id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative p-4 w-full max-w-[23rem] max-h-full">
+                        <!-- Modal content -->
+                        <div class="relative bg-white rounded-lg shadow">
+                            <!-- Modal header -->
+                            <div class="flex items-center justify-between p-4 border-b rounded-t">
+                                <h3 class="text-lg font-semibold text-gray-900">Schedule an appointment</h3>
+                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center" data-modal-toggle="timepicker-modal-{{ doctor.id }}">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                    </svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="p-4 pt-0">
+                       <form method="POST" action="/dash/book/">
+                            {% csrf_token %}
+                            <input type="hidden" name="patient_id" value="{{ profile.user.id }}">
+                            <input type="hidden" name="doctor_id" value="{{ doctor.user.id }}">
 
+                            <label for="required_speciality" class="block mb-2 text-sm font-medium text-gray-900">Required Specialty</label>
+                            <select name="required_speciality" id="required_speciality" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="heart">Heart</option>
+                                <option value="lungs">Lungs</option>
+                                <option value="neck">Neck</option>
+                                <option value="eyes">Eyes</option>
+                                <option value="ear">Ear</option>
+                            </select>
+
+                            <label for="date" class="block mt-3 mb-2 text-sm font-medium text-gray-900">Select Date</label>
+                            <div class="absolute inset-y-0 start-0 flex items-center ps-7 pt-5 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                                    </svg>
+                                </div>
+                            <input id="datepicker-autohide-{{ doctor.id }} " name="appointment_date" datepicker datepicker-autohide type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
+                            
+
+                            <label for="time" class="block mt-3 mb-2 text-sm font-medium text-gray-900">Select Time</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <input type="time" name="appointment_time" id="start-time" class="bg-gray-50 border leading-none border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" min="09:00" max="18:00" value="00:00" required />
+                            </div>
+                            <div class="flex justify-center mt-4">
+                                <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Submit</button>
+                            </div>
+                        </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="hidden p-4 rounded-lg  " id="appointment" role="tabpanel" aria-labelledby="appointment-tab">
+            <div class="scrollable-posts max-h-[700px] overflow-y-auto">
+                            {% for appointment in appointments %}
+                            <article onclick="show_data('{{post.id }}')" class="mx-auto my-10 flex max-w-md flex-col rounded-2xl hover:bg-teal-100 transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center">
+                                <div class="py-4 sm:py-8">
+                                    <a href="#" class="mb-2 block text-2xl font-medium text-gray-700 article-title">Appointment with Dr {{ appointment.doctor.user.first_name }} {{ appointment.doctor.user.lastname_name }}</a>
+                                    {% if appointment.status == 'Cancelled'  %}
+                                        <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelled</span>
+                                    {% elif appointment.status == 'Confirmed' %}
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Confirmed</span>
+                                    {% elif appointment.status == 'Pending' %}
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Created</span>
+
+                                        <!-- <span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Pending</span> -->
+                                    {% endif %}
+                                    <p class="mb-2 text-gray-500 article-summary">{{ appointment.required_speciality }}</p>
+                                    <div class="flex items-center">
+                                        <p class="w-56">
+                                            <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                                            <span class="text-sm text-gray-400">Date: {{ appointment.date }}</span><br>
+                                            <span class="text-sm text-gray-400">Start Time: {{ appointment.time }}</span><br>
+                                            <span class="text-sm text-gray-400">End Time: {{ appointment.end_time }}</span><br>
+                                            <span class="text-sm text-gray-400">Total Duration: 45 mins</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </article>
+                            {% endfor %}  
+            </div>
+    </div>
+
+        {% for post in blog_posts %}
+        <div id="{{ post.id }}" class="fixed flex top-0 left-0 z-10 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center hidden" >
+        <article  class="mx-auto my-10 flex max-w-md flex-col z-20 rounded-2xl transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center ">
+            <div class="shrink-0 my-4 md:mr-8 md:max-w-sm">
+                <img class="rounded-2xl" src="{{ post.image.url }}" alt="" />
+            </div>
+            <div class="py-4 sm:py-8">
+                <a href="#" class="mb-6 block text-2xl font-medium text-gray-700 article-title">{{ post.title }}</a>
+                <p class="mb-6 text-gray-500 article-summary">{{ post.content }}</p>
+                <div class="flex items-center">
+                    <img class="h-10 w-10 rounded-full object-cover" src="{{ post.author.profile_picture.url }}" alt="Author Profile Picture" />
+                    <p class="ml-4 w-56">
+                        <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                        <span class="text-sm text-gray-400">{{ post.created_at }}</span>
+                    </p>
+                    <button id="closedata" onclick="closedata('{{ post.id }}')" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Close</button>
+
+                </div>
+            </div>
+        </article>
+        </div>
+        {% endfor %}
+
+        <!-- <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Dashboard tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p> -->
+    </div>
+    <div class="hidden p-4 rounded-lg  " id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+        <div class="scrollable-posts max-h-[700px] overflow-y-auto">
+                        {% for post in blog_posts %}
+                        <article onclick="show_data('{{post.id }}')" class="mx-auto my-10 flex max-w-md flex-col rounded-2xl hover:bg-teal-100 transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center">
+                            <div class="shrink-0 my-4 md:mr-8 md:max-w-sm">
+                                <img class="rounded-2xl" src="{{ post.image.url }}" alt="" />
+                            </div>
+                            <div class="py-4 sm:py-8">
+                                <a href="#" class="mb-6 block text-2xl font-medium text-gray-700 article-title">{{ post.title }}</a>
+                                <p class="mb-6 text-gray-500 article-summary">{{ post.summary }}</p>
+                                <div class="flex items-center">
+                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ post.author.profile_picture.url }}" alt="Author Profile Picture" />
+                                    <p class="ml-4 w-56">
+                                        <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                                        <span class="text-sm text-gray-400">{{ post.created_at }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}  
+        </div>
+</div>
+        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+            <h2 class="mb-5 text-3xl font-bold">Blog</h2>
+            <p class="text-lg">This is some placeholder content for the Blog tab's associated content. Clicking another tab will toggle the visibility of this one for the next. Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi aliquid sed eligendi, pariatur fuga aperiam amet consequatur non harum dolorem!</p>
+        </div>
+        <div class="hidden p-4 rounded-lg bg-gray-50 dark:bg-gray-800" id="appointment" role="tabpanel" aria-labelledby="appointment-tab">
+            <h2 class="mb-5 text-3xl font-bold">Appointments</h2>
+            <p class="text-lg">This is some placeholder content for the Appointments tab's associated content. Clicking another tab will toggle the visibility of this one for the next. Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi aliquid sed eligendi, pariatur fuga aperiam amet consequatur non harum dolorem!</p>
+        </div>
+    </div>
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const datePicker = document.querySelector('[datepicker-autohide]');

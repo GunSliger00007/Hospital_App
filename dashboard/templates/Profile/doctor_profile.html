@@ -62,7 +62,184 @@
 
 
 {% block content %}
+<div class="mx-auto grid grid-cols-3 gap-4">
+    <div class="col-span-2">
+        
 
+        <div class="bg-gray-100 m-10 px-2 pt-5">
+            <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+                <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
+                    <li class="me-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg" id="myposts-tab" data-tabs-target="#myposts" type="button" role="tab" aria-controls="myposts" aria-selected="false">My Posts</button>
+                    </li>
+                    <li class="me-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="drafts-tab" data-tabs-target="#drafts" type="button" role="tab" aria-controls="drafts" aria-selected="false">Drafts</button>
+                    </li>
+                    <li class="me-2" role="presentation">
+                        <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="appointments-tab" data-tabs-target="#appointments" type="button" role="tab" aria-controls="appointments" aria-selected="false">My Appointments</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="scrollable-posts max-h-[700px] overflow-y-auto">
+                <div id="default-tab-content">
+                    <div class="hidden p-4 rounded-lg" id="myposts" role="tabpanel" aria-labelledby="myposts-tab">
+                        
+                        
+                        {% for post in blog_posts %}
+                                <article onclick="show_data('{{post.id }}')" class="mx-auto my-10 flex max-w-md flex-col rounded-2xl hover:bg-teal-100  transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center">
+                                <div class="shrink-0 my-4 md:mr-8 md:max-w-sm">
+                                    <img class="rounded-2xl" src="{{ post.image.url }}" alt="" />
+                                </div>
+                                <div class="py-4 sm:py-8">
+                                    <a href="#" class="mb-6 block text-2xl font-medium text-gray-700">{{ post.title }}</a>
+                                    <p class="mb-6 text-gray-500">{{ post.summary }}</p>
+                                    <div class="flex items-center">
+                                    <img class="h-10 w-10 rounded-full object-cover" src="{{ post.author.profile_picture.url }}" alt="Simon Lewis" />
+                                    <p class="ml-4 w-56">
+                                        <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                                        <span class="text-sm text-gray-400">{{ post.created_at }}</span>
+                                    </p>
+                                    </div>
+                                </div>
+                                </article>
+                        {% endfor %}
+                    </div>
+                    <div class="hidden p-4 rounded-lg " id="drafts" role="tabpanel" aria-labelledby="drafts-tab">
+                        {% for post in draft_blog_posts %}
+                            <article class="mx-auto my-10 flex max-w-md flex-col rounded-2xl hover:bg-teal-100  transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center">
+                                <div class="shrink-0 my-4 md:mr-8 md:max-w-sm">
+                                    <img class="rounded-2xl" src="{{ post.image.url }}" alt="" />
+                                </div>
+                                <div class="py-4 sm:py-8">
+                                    <a href="#" class="mb-6 block text-2xl font-medium text-gray-700">{{ post.title }}</a>
+                                    <p class="mb-6 text-gray-500">{{ post.summary }}</p>
+                                    <div class="flex justify-between">
+                                        <div class="flex items-center">
+                                            <img class="h-10 w-10 rounded-full object-cover" src="{{ post.author.profile_picture.url }}" alt="Simon Lewis" />
+                                            <p class="ml-4 w-56">
+                                                <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                                                <span class="text-sm text-gray-400">{{ post.created_at }}</span>
+                                            </p>
+                                        </div>
+                                        <div class="flex gap-4 mr-4 mt-2">
+                                            <div class="hover:bg-green-200 focus h-10 w-10 items-center hover:rounded-full edit-icon" post-id="{{ post.id }}" data-title="{{ post.title }}" data-content="{{ post.content }}" data-category="{{ post.category }}" data-image="{{ post.image.url }}" data-draft="{{ post.draft }}">
+                                                <span class="material-symbols-outlined">edit</span>
+                                            </div>
+                                            <div class="hover:bg-red-200 focus h-10 w-10 items-center hover:rounded-full">
+                                                <a href="{% url 'delete_post' post.id %}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#EA3323">
+                                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                                    </svg>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                    <div class="hidden p-4 rounded-lg " id="appointments" role="tabpanel" aria-labelledby="appointments-tab">
+                        <div class="scrollable-posts max-h-[700px] overflow-y-auto">
+                            {% for appointment in appointments %}
+                            <article onclick="show_data('{{post.id }}')" class="mx-auto my-10 flex max-w-md flex-col rounded-2xl hover:bg-teal-100 transition duration-300 bg-white px-4 shadow md:max-w-5xl md:flex-row md:items-center">
+                                <div class="py-4 sm:py-8">
+                                    <a href="#" class="mb-2 block text-2xl font-medium text-gray-700 article-title">Appointment with {{ appointment.patient.user.username }}</a>
+                                    {% if appointment.status == 'Cancelled'  %}
+                                        <span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Cancelled</span>
+                                    {% elif appointment.status == 'Confirmed' %}
+                                        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Confirmed</span>
+                                    {% elif appointment.status == 'Pending' %}
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Created</span>
+                                        
+                                    <!-- <span class="bg-green-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Created</span> -->
+                                    {% endif %}
+                                    <p class="mb-1 text-gray-500 article-summary">Required Speciality {{ appointment.required_speciality }}</p>
+                                            <strong class="block font-medium text-gray-700">{{ post.author.username }}</strong>
+                                            <span class="text-sm text-gray-400">Date: {{ appointment.date }}</span><br>
+                                            <span class="text-sm text-gray-400">Start Time: {{ appointment.time }}</span><br>
+                                            <span class="text-sm text-gray-400">End Time: {{ appointment.end_time }}</span><br>
+                                            <span class="text-sm text-gray-400">Total Duration: 45 mins</span>
+                                    <div class="flex mt-4">
+                                    
+                                    </div>
+                                    
+                                    
+
+                                </div>
+                            </article>
+                            {% endfor %}  
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="scrollable-posts max-h-[700px] overflow-y-auto">
+                
+                </div> -->
+            </div>
+    </div>
+        
+    <div>
+        <style>
+        body {background:white !important;}
+        </style>
+        <form action="/dash/post/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="editor mt-10 mx-auto w-10/12 flex flex-col text-gray-800 border border-gray-300 p-4 shadow-lg max-w-2xl">
+                <div class="heading text-center font-bold text-2xl m-3 text-gray-800">Write a Blog Post</div>
+                <input class="title bg-gray-100 border border-gray-300 p-2 mb-4 outline-none" spellcheck="false" placeholder="Title" name="title" type="text">
+                <textarea class="description bg-gray-100 sec p-3 h-60 border border-gray-300 outline-none" spellcheck="false" placeholder="Write your thoughts here" name="content"></textarea>
+                <div class="max-w-sm">
+                    <label for="underline_select" class="sr-only">Select a Category</label>
+                    <select name="category" id="underline_select" class="block py-2.5 px-0 w-full text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+                        <option selected>Select a Category</option>
+                        <option value="MH">Mental Health</option>
+                        <option value="HD">Heart Disease</option>
+                        <option value="COV">Covid 19</option>
+                        <option value="IMM">Immunization</option>
+                    </select>
+                    
+                </div>
+                <div class="flex items-center m-2 mt-2">
+                    <input type="checkbox" id="draft" name="draft" class="form-checkbox h-5 w-5 text-indigo-600">
+                    <label for="draft" class="ml-2 text-gray-700">Save as Draft</label>
+                </div>
+                
+                <!-- icons -->
+                <div class="icons flex text-gray-500 m-2">
+                    <input id="file-input" name="image" type="file" accept="image/*" class="hidden">
+                    <span id="upload-icon" class="material-symbols-outlined cursor-pointer">add_photo_alternate</span>
+                    <div class="count ml-auto text-gray-400 text-xs font-semibold">0/300</div>
+                </div>
+                <!-- buttons -->
+                
+                <div class="buttons flex">
+                    <button type="submit" class="btn border border-indigo-500 p-1 px-4 font-semibold cursor-pointer text-gray-200 ml-2 bg-indigo-500">Post</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Show Toast  -->
+        {% if success %}
+        <div id="toast-success" class="flex mx-auto items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow" role="alert">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                </svg>
+                <span class="sr-only">Check icon</span>
+            </div>
+            <div class="ms-3 text-sm font-normal">{{ message }}</div>
+            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 " data-dismiss-target="#toast-success" aria-label="Close">
+                <span class="sr-only">Close</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+            </button>
+        </div>
+        {% endif %}
+    
+        
+    </div>
     
 </div>
 <!-- Modal Structure -->
